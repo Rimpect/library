@@ -1,5 +1,7 @@
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+
+        Manager manager = new Manager("C:\\Users\\макс\\IdeaProjects\\library\\dictionary1.txt", "C:\\Users\\макс\\IdeaProjects\\library\\dictionary2.txt");
+        manager.manage();
     }
 }

@@ -1,60 +1,63 @@
-import java.io.*;
-import java.util.*;
-import java.util.TreeMap;
-public class DictionaryService {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class DictionaryService extends DictionaryAbstract {
     private Map<String, String> dictionary;
     private String filePath;
-    private String pattern;
+    private Pattern pattern;
 
-    public DictionaryService(String filePath, String pattern) {
+    public DictionaryService(String filePath, String regex) {
         this.filePath = filePath;
-        this.pattern = pattern;
-        dictionary = new TreeMap<>();
-        readFromFile();
+        this.pattern = Pattern.compile(regex);
+        this.dictionary = new HashMap<>();
     }
 
+    @Override
     public void readFromFile() {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
+        try {
+            Scanner fileScanner = new Scanner(new File(filePath));
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
                 String[] parts = line.split(" - ");
-                if (parts.length == 2 && parts[0].matches(pattern)) {
+                if (parts.length == 2 && isValidEntry(parts[0], parts[1])) {
                     dictionary.put(parts[0], parts[1]);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            fileScanner.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Файл не найден: " + filePath);
         }
     }
 
-    public void deleteByKey(String key) {
-        dictionary.remove(key);
-        writeToFile();
+    @Override
+    public void addEntry(String key, String value) {
+        if (isValidEntry(key, value)) {
+            dictionary.put(key, value);
+        }
     }
 
+    @Override
+    public void deleteByKey(String key) {
+        dictionary.remove(key);
+    }
+
+    @Override
     public String findByKey(String key) {
         return dictionary.get(key);
     }
 
-    public void addEntry(String key, String value) {
-        if (key.matches(pattern)) {
-            dictionary.put(key, value);
-            writeToFile();
-        }
-    }
-
-    private void writeToFile() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
-            for (Map.Entry<String, String> entry : dictionary.entrySet()) {
-                bw.write(entry.getKey() + " - " + entry.getValue());
-                bw.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    @Override
     public Map<String, String> getDictionary() {
         return dictionary;
     }
 
+    private boolean isValidEntry(String key, String value) {
+        Matcher matcher = pattern.matcher(key);
+        return matcher.matches();
+    }
 }

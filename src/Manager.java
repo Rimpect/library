@@ -60,18 +60,18 @@ public class Manager {
         }
     }
 
-    private void viewDictionary(DictionaryService dictionaryService) {
-        dictionaryService.readFromFile();
-        dictionaryService.getDictionary().forEach((k, v) -> System.out.println(k + " - " + v));
+    private void viewDictionary(DictionaryAbstract DictionaryAbstract) {
+        DictionaryAbstract.readFromFile();
+        DictionaryAbstract.getDictionary().forEach((k, v) -> System.out.println(k + " - " + v));
     }
 
-    private void deleteFromDictionary(DictionaryService dictionary, Scanner scanner) {
+    private void deleteFromDictionary(DictionaryAbstract dictionary, Scanner scanner) {
         System.out.println("Введите ключ для удаления:");
         String key = scanner.nextLine();
         dictionary.deleteByKey(key);
     }
 
-    private void findInDictionary(DictionaryService dictionary, Scanner scanner) {
+    private void findInDictionary(DictionaryAbstract dictionary, Scanner scanner) {
         System.out.println("Введи ключ для поиска:");
         String key = scanner.nextLine();
         String value = dictionary.findByKey(key);
@@ -82,7 +82,7 @@ public class Manager {
         }
     }
 
-    private void addToDictionary(DictionaryService dictionary, Scanner scanner) {
+    private void addToDictionary(DictionaryAbstract dictionary, Scanner scanner) {
         System.out.println("Введите ключ:");
         String key = scanner.nextLine();
         System.out.println("Введите значение:");

@@ -1,3 +1,5 @@
+/*public class f {
+}
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -10,11 +12,11 @@ import java.util.Scanner;
 public class DictionaryService extends DictionaryAbstract {
     private Map<String, String> dictionary;
     private String filePath;
-    private Pattern valuePattern;
+    private Pattern pattern;
 
-    public DictionaryService(String filePath, String valueRegex) {
+    public DictionaryService(String filePath, String regex) {
         this.filePath = filePath;
-        this.valuePattern = Pattern.compile(valueRegex);
+        this.pattern = Pattern.compile(regex);
         this.dictionary = new HashMap<>();
         readFromFile(); // Читаем данные из файла при создании объекта
     }
@@ -27,7 +29,7 @@ public class DictionaryService extends DictionaryAbstract {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(" - ");
-                if (parts.length == 2) {
+                if (parts.length == 2 && isValidEntry(parts[0], parts[1])) {
                     dictionary.put(parts[0], parts[1]);
                 }
             }
@@ -39,7 +41,7 @@ public class DictionaryService extends DictionaryAbstract {
 
     @Override
     public boolean addEntry(String key, String value) {
-        if (!key.startsWith("0") && isValidValue(value)) {
+        if (isValidEntry(key, value)) {
             dictionary.put(key, value);
             saveToFile(); // Сохраняем изменения в файл
             return true;
@@ -67,8 +69,8 @@ public class DictionaryService extends DictionaryAbstract {
         return dictionary;
     }
 
-    private boolean isValidValue(String value) {
-        Matcher matcher = valuePattern.matcher(value);
+    private boolean isValidEntry(String key, String value) {
+        Matcher matcher = pattern.matcher(key);
         return matcher.matches();
     }
 
@@ -84,3 +86,5 @@ public class DictionaryService extends DictionaryAbstract {
         }
     }
 }
+
+ */

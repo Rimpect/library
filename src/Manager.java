@@ -5,11 +5,13 @@ public class Manager {
     private DictionaryService dictionary2;
 
     public Manager(String filePath1, String filePath2) {
-
+        if (filePath1.equals(filePath2)) {
+            throw new IllegalArgumentException("Путь к файлу должен быть уникальным для каждого словаря.");
+        }
         dictionary1 = new DictionaryService(filePath1, "^.{1,9}$|^[a-zA-Z]{4}$");
-
         dictionary2 = new DictionaryService(filePath2, "^.{1,9}$|^[0-9]{5}$");
     }
+
 
     public void manage() {
         Scanner scanner = new Scanner(System.in);
@@ -60,25 +62,29 @@ public class Manager {
         }
     }
 
-    private void viewDictionary(DictionaryAbstract DictionaryAbstract) {
-        DictionaryAbstract.readFromFile();
-        DictionaryAbstract.getDictionary().forEach((k, v) -> System.out.println(k + " - " + v));
+    private void viewDictionary(DictionaryAbstract dictionary) {
+        dictionary.readFromFile();
+        dictionary.getDictionary().forEach((k, v) -> System.out.println(k + " - " + v));
     }
 
     private void deleteFromDictionary(DictionaryAbstract dictionary, Scanner scanner) {
         System.out.println("Введите ключ для удаления:");
         String key = scanner.nextLine();
-        dictionary.deleteByKey(key);
+        if (dictionary.deleteByKey(key)) {
+            System.out.println("Запись успешно удалена.");
+        } else {
+            System.out.println("Запись не найдена для удаления.");
+        }
     }
 
     private void findInDictionary(DictionaryAbstract dictionary, Scanner scanner) {
-        System.out.println("Введи ключ для поиска:");
+        System.out.println("Введите ключ для поиска:");
         String key = scanner.nextLine();
         String value = dictionary.findByKey(key);
         if (value != null) {
             System.out.println(key + " - " + value);
         } else {
-            System.out.println("Ключ не найден");
+            System.out.println("Ключ не найден.");
         }
     }
 
@@ -87,6 +93,10 @@ public class Manager {
         String key = scanner.nextLine();
         System.out.println("Введите значение:");
         String value = scanner.nextLine();
-        dictionary.addEntry(key, value);
+        if (dictionary.addEntry(key, value)) {
+            System.out.println("Запись успешно добавлена.");
+        } else {
+            System.out.println("Не удалось добавить запись.");
+        }
     }
 }

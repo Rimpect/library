@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class DictionaryService extends DictionaryAbstract {
+public class DictionaryService implements DictionaryInterface {
     private Map<String, String> dictionary;
     private String filePath;
     private Pattern valuePattern;
@@ -16,12 +16,12 @@ public class DictionaryService extends DictionaryAbstract {
         this.filePath = filePath;
         this.valuePattern = Pattern.compile(valueRegex);
         this.dictionary = new HashMap<>();
-        readFromFile(); // Читаем данные из файла при создании объекта
+        readFromFile();
     }
 
     @Override
     public void readFromFile() {
-        dictionary.clear(); // Очищаем текущий словарь перед чтением из файла
+        dictionary.clear();
         try {
             Scanner fileScanner = new Scanner(new File(filePath));
             while (fileScanner.hasNextLine()) {
@@ -41,7 +41,7 @@ public class DictionaryService extends DictionaryAbstract {
     public boolean addEntry(String key, String value) {
         if (!key.startsWith("0") && isValidValue(value)) {
             dictionary.put(key, value);
-            saveToFile(); // Сохраняем изменения в файл
+            saveToFile();
             return true;
         }
         return false;
@@ -51,7 +51,7 @@ public class DictionaryService extends DictionaryAbstract {
     public boolean deleteByKey(String key) {
         if (dictionary.containsKey(key)) {
             dictionary.remove(key);
-            saveToFile(); // Сохраняем изменения в файл
+            saveToFile();
             return true;
         }
         return false;

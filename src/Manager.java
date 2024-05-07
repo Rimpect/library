@@ -1,73 +1,66 @@
+import java.util.Map;
 import java.util.Scanner;
 
 public class Manager {
-    private DictionaryService dictionary1;
-    private DictionaryService dictionary2;
+    private DictionaryService dictionary;
 
-    public Manager(String filePath1, String filePath2) {
-        if (filePath1.equals(filePath2)) {
-            throw new IllegalArgumentException("Путь к файлу должен быть уникальным для каждого словаря.");
-        }
-        dictionary1 = new DictionaryService(filePath1, "^.{1,9}$|^[a-zA-Z]{4}$");
-        dictionary2 = new DictionaryService(filePath2, "^.{1,9}$|^[0-9]{5}$");
+    public Manager(String filePath) {
+
+        dictionary = new DictionaryService(filePath, "^[a-zA-Z]{4}$");
+        //dictionary2 = new DictionaryService(filePath2, "^[0-9]{5}$");
     }
-
 
     public void manage() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("1. Просмотр словаря 1");
-            System.out.println("2. Просмотр словаря 2");
-            System.out.println("3. Удаление из словаря 1");
-            System.out.println("4. Удаление из словаря 2");
-            System.out.println("5. Поиск в словаре 1");
-            System.out.println("6. Поиск в словаре 2");
-            System.out.println("7. Добавить в словарь 1");
-            System.out.println("8. Добавить в словарь 2");
-            System.out.println("9. Выход");
+            System.out.println("1. Просмотр словаря");
+            System.out.println("2. Удаление из словаря");
+            System.out.println("3. Поиск в словаре");
+            System.out.println("4. Добавить в словарь");
+            System.out.println("5. Выход");
+            String input = scanner.nextLine();
+            int choice;
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline left-over
+            try {
+                choice = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Неверный ввод. Пожалуйста, введите число от 1 до 5.");
+                continue;
+            }
+
+            if (choice < 1 || choice > 5) {
+                System.out.println("Неверный ввод. Пожалуйста, введите число от 1 до 5.");
+                continue;
+            }
 
             switch (choice) {
-                case 1:
-                    viewDictionary(dictionary1);
+                 case 1:
+                    viewDictionary(dictionary);
                     break;
                 case 2:
-                    viewDictionary(dictionary2);
+                    deleteFromDictionary(dictionary, scanner);
                     break;
                 case 3:
-                    deleteFromDictionary(dictionary1, scanner);
+                    findInDictionary(dictionary, scanner);
                     break;
                 case 4:
-                    deleteFromDictionary(dictionary2, scanner);
+                    addToDictionary(dictionary, scanner);
                     break;
                 case 5:
-                    findInDictionary(dictionary1, scanner);
-                    break;
-                case 6:
-                    findInDictionary(dictionary2, scanner);
-                    break;
-                case 7:
-                    addToDictionary(dictionary1, scanner);
-                    break;
-                case 8:
-                    addToDictionary(dictionary2, scanner);
-                    break;
-                case 9:
                     System.exit(0);
-                default:
-                    System.out.println("Неверный ввод");
+                    break;
             }
         }
     }
 
-    private void viewDictionary(DictionaryAbstract dictionary) {
+    private void viewDictionary(DictionaryService dictionary) {
         dictionary.readFromFile();
-        dictionary.getDictionary().forEach((k, v) -> System.out.println(k + " - " + v));
+        for (Map.Entry<String, String> entry : dictionary.getDictionary().entrySet()) {
+            System.out.println(entry.getKey() + " - " + entry.getValue());
+        }
     }
 
-    private void deleteFromDictionary(DictionaryAbstract dictionary, Scanner scanner) {
+    private void deleteFromDictionary(DictionaryService dictionary, Scanner scanner) {
         System.out.println("Введите ключ для удаления:");
         String key = scanner.nextLine();
         if (dictionary.deleteByKey(key)) {
@@ -77,7 +70,7 @@ public class Manager {
         }
     }
 
-    private void findInDictionary(DictionaryAbstract dictionary, Scanner scanner) {
+    private void findInDictionary(DictionaryService dictionary, Scanner scanner) {
         System.out.println("Введите ключ для поиска:");
         String key = scanner.nextLine();
         String value = dictionary.findByKey(key);
@@ -88,7 +81,7 @@ public class Manager {
         }
     }
 
-    private void addToDictionary(DictionaryAbstract dictionary, Scanner scanner) {
+    private void addToDictionary(DictionaryService dictionary, Scanner scanner) {
         System.out.println("Введите ключ:");
         String key = scanner.nextLine();
         System.out.println("Введите значение:");

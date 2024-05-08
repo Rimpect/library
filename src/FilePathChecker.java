@@ -2,91 +2,70 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
-
+import java.util.Map;
+import java.util.HashMap;
 public class FilePathChecker {
-    public  String filePath1;
-    public  static String regex;
-    public FilePathChecker(String filePath1) {
-        this.filePath1 = filePath1;
-    }
-    public  boolean validatePaths() {
-        Path path1 = Paths.get(filePath1);
-        return Files.exists(path1) && Files.isRegularFile(path1);
-    }
+    private static Map<String, DictionaryInterface> dictionaryMap;
+
     public static void managemain() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("1. Словарь №1");
-            System.out.println("2. Словарь №2");
-            System.out.println("3. Словарь №3");
-            System.out.println("4. Добавить в словарь");
-            System.out.println("5. Выход");
+            System.out.println("1. Словарь №1(Английские буквы в количестве 4 штуки)");
+            System.out.println("2. Словарь №2 Цифры в количестве 5 штук");
+            System.out.println("0. Выход");
             String input = scanner.nextLine();
             int choice;
             try {
                 choice = Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.println("Неверный ввод. Пожалуйста, введите число от 1 до 5.");
+                System.out.println("Неверный ввод. Пожалуйста, введите число которое есть в консоли.");
                 continue;
             }
-            if (choice < 1 || choice > 5) {
-                System.out.println("Неверный ввод. Пожалуйста, введите число от 1 до 5.");
-                continue;
-            }
-            switch (choice) {
-                case 1:
-                    regex = "^[a-zA-Z]{4}$";
-                    aaaaaa();
-                    break;
-                case 2:
-                    regex = "^[0-9]{5}$";
-                    aaaaaa();
-                    break;
-                case 3:
-                    regex = "";
-                    aaaaaa();
-                    break;
-                case 4:
-                    regex = "";
-                    aaaaaa();
-                    break;
-                case 5:
-                    System.exit(0);
-                    break;
+            if (choice >= 1 && choice <= 2) {
+                checker(dictionaryMap.get(String.valueOf(choice)));
+            } else if (choice == 0) {
+                System.exit(0);
+            } else {
+                System.out.println("Неверный ввод. Пожалуйста, введите число которое есть в консоли.");
             }
         }
     }
-    public static void aaaaaa()
-    {
+
+    public static void checker(DictionaryInterface dictionary) {
         Scanner scanner = new Scanner(System.in);
-        int maxAttempts = 3;
-        int attempts = 0;
-        do {
-            System.out.println("Введите путь к первому файлу:");
-            String filePath1 = scanner.nextLine();
+        System.out.println("Введите путь к файлу:");
+        String filePath = scanner.nextLine();
 
-            FilePathChecker filePathChecker = new FilePathChecker(filePath1);
-
-            if (filePathChecker.validatePaths()) {
-                System.out.println("Файл существует.");
-                Manager manager = new Manager(filePath1, regex);
-                manager.manage();
-                break;
-            } else {
-                System.out.println("Файл не существует.");
-                attempts++;
-                if (attempts < maxAttempts) {
-                    System.out.println("Попробуйте еще раз. Осталось попыток: " + (maxAttempts - attempts));
-                }
-            }
-        } while (attempts < maxAttempts);
-        if (attempts == maxAttempts) {
-            System.out.println("Превышено максимальное количество попыток. Программа завершена.");
+        if (validatePath(filePath)) {
+            System.out.println("Файл существует.");
+            dictionary.readFromFile(filePath);
+            Manager manager = new Manager(dictionary);
+            manager.manage();
+        } else {
+            System.out.println("Файл не существует.");
         }
         scanner.close();
     }
-    public static void main(String[] args) {
-        managemain();
+    private static boolean validatePath(String filePath) {
+        Path path = Paths.get(filePath);
 
+
+        return Files.exists(path) && Files.isRegularFile(path);
+    }
+    private static boolean validateFilePath(String filePath) {
+        return Files.exists(Paths.get(filePath)) && !Files.isDirectory(Paths.get(filePath));
+    }
+    public static void main(String[] args) {
+        dictionaryMap = new HashMap<>();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Введите путь к файлу ");
+        String filePath = scanner.nextLine();
+        if (!validateFilePath(filePath)) {
+            System.out.println("Неверный путь к файлу.");
+            System.exit(1);
+        }
+        dictionaryMap.put("1", new EnglishDictionary(filePath));
+        dictionaryMap.put("2", new NumberDictionary(filePath));
+        managemain();
     }
 }

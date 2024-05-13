@@ -65,8 +65,8 @@ class Manager {
                     }
                     break;
                 case "0":
-                    exit = true;
-                    break;
+                    FilePathChecker.checker();
+
                 default:
                     System.out.println("Неверный ввод. Пожалуйста, введите число от 0 до 4.");
                     break;

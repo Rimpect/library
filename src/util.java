@@ -1,25 +1,14 @@
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
-public class util {
-    protected Map<String, String> dictionary;
-    protected String filePath;
-    protected Pattern regex;
 
-    public util(String filePath, String regex) {
-        this.filePath = filePath;
-        this.regex = Pattern.compile(regex);
-        this.dictionary = new HashMap<>();
-        readFromFile(filePath);
-    }
-
-    public void readFromFile(String filePath) {
+class util {
+    public static void readFromFile(Map<String, String> dictionary, String filePath, String regex) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(":");
-                if (parts.length == 2 && regex.matcher(parts[0]).matches()) {
+                if (parts.length == 2 && parts[0].matches(regex)) {
                     dictionary.put(parts[0], parts[1]);
                 }
             }
@@ -28,38 +17,27 @@ public class util {
         }
     }
 
-
-    public boolean addEntry(String key, String value) {
-        if (regex.matcher(key).matches()) {
+    public static boolean addEntry(Map<String, String> dictionary, String key, String value, String regex) {
+        if (key.matches(regex)) {
             dictionary.put(key, value);
-            writeToFile();
             return true;
         }
         return false;
     }
 
-
-    public boolean deleteByKey(String key) {
+    public static boolean deleteByKey(Map<String, String> dictionary, String key) {
         if (dictionary.containsKey(key)) {
             dictionary.remove(key);
-            writeToFile();
             return true;
         }
         return false;
     }
 
-
-    public String findByKey(String key) {
+    public static String findByKey(Map<String, String> dictionary, String key) {
         return dictionary.get(key);
     }
 
-
-    public Map<String, String> getDictionary() {
-        return new HashMap<>(dictionary);
-    }
-
-
-    public void writeToFile() {
+    public static void writeToFile(Map<String, String> dictionary, String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (Map.Entry<String, String> entry : dictionary.entrySet()) {
                 writer.write(entry.getKey() + ":" + entry.getValue());
@@ -69,5 +47,12 @@ public class util {
             e.printStackTrace();
         }
     }
-}
+    public static boolean validatePath(String filePath) {
+        File file = new File(filePath);
+        return file.exists() && !file.isDirectory();
+    }
 
+    public static void readFromFile(DictionaryInterface dictionary, String filePath) {
+
+    }
+}

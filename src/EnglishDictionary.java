@@ -8,16 +8,16 @@ class EnglishDictionary implements DictionaryInterface {
 
     public EnglishDictionary(String filePath) {
         dictionary = new HashMap<>();
-        regex = "^[a-zA-Z]{4}$"; // Регулярное выражение для английских слов из 4 букв
+        regex = "^[a-zA-Z]{4}$";
         this.filePath = filePath;
-        util.readFromFile(dictionary, filePath, regex); // Считываем данные из файла при создании объекта
+        util.readFromFile(dictionary, filePath, regex);
     }
 
     @Override
     public boolean addEntry(String key, String value) {
         boolean result = util.addEntry(dictionary, key, value, regex);
         if (result) {
-            util.writeToFile(dictionary, filePath); // Записываем изменения в файл
+            util.writeToFile(dictionary, filePath);
         }
         return result;
     }
@@ -29,7 +29,7 @@ class EnglishDictionary implements DictionaryInterface {
     public boolean deleteByKey(String key) {
         boolean result = util.deleteByKey(dictionary, key);
         if (result) {
-            util.writeToFile(dictionary, filePath); // Записываем изменения в файл
+            util.writeToFile(dictionary, filePath);
         }
         return result;
     }
@@ -41,7 +41,7 @@ class EnglishDictionary implements DictionaryInterface {
 
     @Override
     public Map<String, String> getDictionary() {
-        return new HashMap<>(dictionary); // Возвращаем копию словаря для безопасности
+        return new HashMap<>(dictionary);
     }
 
     @Override

@@ -18,7 +18,7 @@ class util {
     }
 
     public static boolean addEntry(Map<String, String> dictionary, String key, String value, String regex) {
-        if (key.matches(regex)) {
+        if (value.matches(regex)) {
             dictionary.put(key, value);
             return true;
         }

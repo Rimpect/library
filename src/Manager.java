@@ -35,7 +35,7 @@ class Manager {
                     if (dictionary.addEntry(addKey, addValue)) {
                         System.out.println("Запись добавлена успешно.");
                     } else {
-                        System.out.println("Неверный формат ключа.");
+                        System.out.println("Неверный формат слова.");
                     }
                     break;
                 case "2":

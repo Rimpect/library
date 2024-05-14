@@ -10,7 +10,7 @@ class NumberDictionary implements DictionaryInterface {
         dictionary = new HashMap<>();
         regex = "^[0-9]{5}$";
         this.filePath = filePath;
-        util.readFromFile(dictionary, filePath, regex); // Считываем данные из файла при создании объекта
+        util.readFromFile(dictionary, filePath, regex);
     }
     @Override
     public String getFilePath() {
@@ -20,7 +20,7 @@ class NumberDictionary implements DictionaryInterface {
     public boolean addEntry(String key, String value) {
         boolean result = util.addEntry(dictionary, key, value, regex);
         if (result) {
-            util.writeToFile(dictionary, filePath); // Записываем изменения в файл
+            util.writeToFile(dictionary, filePath);
         }
         return result;
     }
@@ -29,7 +29,7 @@ class NumberDictionary implements DictionaryInterface {
     public boolean deleteByKey(String key) {
         boolean result = util.deleteByKey(dictionary, key);
         if (result) {
-            util.writeToFile(dictionary, filePath); // Записываем изменения в файл
+            util.writeToFile(dictionary, filePath);
         }
         return result;
     }
@@ -41,7 +41,7 @@ class NumberDictionary implements DictionaryInterface {
 
     @Override
     public Map<String, String> getDictionary() {
-        return new HashMap<>(dictionary); // Возвращаем копию словаря для безопасности
+        return new HashMap<>(dictionary);
     }
 
     @Override
